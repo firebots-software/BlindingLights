@@ -1,4 +1,5 @@
 import time
+import ntcore as NetworkTables
 from rpi_ws281x import *
 
 # LED strip configuration:
@@ -26,18 +27,26 @@ WHITE = Color(255, 255, 255)
 BLACK = Color(0, 0, 0)
 ORANGE = Color(255, 172, 28)
 
-# Define a function to set all pixels to a given color.
-def set_color(color):
-    for i in range(strip.numPixels()):
-        strip.setPixelColor(i, color)
-    strip.show()
+inst = NetworkTables.NetworkTableInstance.getDefault()
+inst.startServer()
 
-# Set all pixels to red.
+lights_nt = inst.getTable('Lights')
+purpleSub = lights_nt.getBooleanTopic("Purple").subscribe()
 
 while True:
-	set_color(PURPLE)
-	time.sleep(1)
+    # boolean if all the lights are purple (for the cube)
+	
+	isPurple = purpleSub.get()
+	# Define a function to set all pixels to a given color.
+	def set_color(color):
+		for i in range(strip.numPixels()):
+			strip.setPixelColor(i, color)
+		strip.show()
 
-# Set all pixels to yellow.
-	set_color(YELLOW)
-	time.sleep(1)
+	if isPurple:
+		set_color(PURPLE)
+		time.sleep(1)
+	else:
+		set_color(YELLOW)
+		time.sleep(1)
+
