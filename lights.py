@@ -28,7 +28,18 @@ BLACK = Color(0, 0, 0)
 ORANGE = Color(255, 172, 28)
 
 inst = NetworkTables.NetworkTableInstance.getDefault()
-inst.startServer()
+
+#start a NT4 client
+inst.startClient4("Test Client")
+
+# connect to a roboRIO with team number TEAM
+inst.setServerTeam(3501)
+
+# starting a DS client will try to get the roboRIO address from the DS application
+inst.startDSClient()
+
+# connect to a specific host/port
+inst.setServer("host", NetworkTables.NetworkTableInstance.kDefaultPort4)
 
 lights_nt = inst.getTable('Lights')
 purpleSub = lights_nt.getBooleanTopic("Purple").subscribe()
